@@ -1,47 +1,85 @@
 package clienteweb;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/cliente","/clienteServlet","/clienteController"})
-public class ClienteServlet extends HttpServlet {
-	
-	private static final long serialVersionUID = 1L;
+import br.com.tecnosul.model.Cliente;
 
-	//CharacterEncoding = new characterEncoding(UTF-8);
+@WebServlet(urlPatterns = { "/cliente", "/clienteServlet", "/clienteController" })
+public class ClienteServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	List<Cliente> lista = new ArrayList<>();
+
+	public ClienteServlet() {
+		System.out.println("Construindo Servlet...");
+	}
+
+	@Override
+	public void init() throws ServletException {
+		System.out.println("Inicializando Servlet");
+		super.init();
+	}
+	
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println("Chamando Service...");
+		super.service(req, resp);
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			
-		System.out.println("Chamou pelo método GET");		
 		
+		RequestDispatcher dispatcher = req.getRequestDispatcher("cliente.jsp");
+		req.setAttribute("lista", lista);
+		dispatcher.forward(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//System.out.println("Chamou pelo método POST");
+		
+		//Recebendo o e-mail
+		String email = req.getParameter("email");
+		
+		//Colocando e-mail em um objeto cliente
+		Cliente cli = new Cliente();
+		cli.setEmail(email);
+				
+		//adicionando o objeto cliente na Lista de cliente		
+		lista.add(cli);
+		
+		/* System.out.println("Chamou pelo método POST");
 		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().print("Chamou pelo método POST");
+		resp.getWriter().print("Chamou pelo método POST enviando e-mail:" + "!");*/
 	}
-	
+
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
-		//System.out.println("Chamou pelo método DELETE");
+
+		// System.out.println("Chamou pelo método DELETE");
 		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().print("Chamou pelo método DELETE");		
+		resp.getWriter().print("Chamou pelo método DELETE");
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		// System.out.println("Chamou pelo método PUT");
+		resp.setCharacterEncoding("UTF-8");
+		resp.getWriter().print("Chamou pelo método PUT");
 	}
 	
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		//System.out.println("Chamou pelo método PUT");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().print("Chamou pelo método PUT");
+	public void destroy() {
+		System.out.println("Servlet será destruido");		
+		super.destroy();
 	}
 }

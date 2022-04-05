@@ -18,14 +18,24 @@
 <body>
 
 	<div>
-	${requestScope.msg}
+		<%
+		Object msg = request.getAttribute("msg");
+		if (msg != null) {
+			String msgStr = (String) msg;
+			out.print(msg);
+		}
+
+		Cliente cli = (Cliente) request.getAttribute("cli");
+
+		Object iCli = request.getAttribute("iCli");
+		%>
 	</div>
 
 	<form method="post" action="cliente">
 
-		<input type="hidden" name="i" value="${requestScope.iCli}">
-		E-mail: <input type="text" value="${requestScope.cli.email}"
-			name="email" /> <input type="submit" value="Save">
+		<input type="hidden" name="i" value="<%=iCli%>"> E-mail: <input
+			type="text" value="<%=cli.getEmail()%>" name="email" /> <input
+			type="submit" value="Save">
 	</form>
 
 	<table border="1">
@@ -42,10 +52,14 @@
 		%>
 
 		<tr>
-			<td><%=c.getEmail()%></td>
-
-			<td><a href="javascript:confirma( <%=i%>)"> excluir </a> | <a
-				href="cliente?i=<%=i%>&acao=edit"> editar </a></td>
+			<td>
+			<%=c.getEmail()%>
+			</td>
+			
+			<td>
+			<a href="javascript:confirma( <%=i%>)"> excluir </a> | 
+			<a href="cliente?i=<%=i%>&acao=edit"> editar </a>
+			</td>
 		</tr>
 
 		<%

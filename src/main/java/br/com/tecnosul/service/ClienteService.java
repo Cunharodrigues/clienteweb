@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.com.tecnosul.model.Cliente;
 
-
 public class ClienteService {
 
 	private static List<Cliente> lista = new ArrayList<>();
@@ -13,12 +12,27 @@ public class ClienteService {
 	public void cadastrar(Cliente cliente) {
 		lista.add(cliente);
 	}
-	
-	public List<Cliente> getTodosClientes(){
+
+	public void salvar(int indice, Cliente cliente) {
+		if (indice!=-1) {
+			//Alteração
+			lista.set(indice, cliente);
+		} else {
+			//Cadastra			
+			lista.add(cliente);
+		}
+	}
+
+	public List<Cliente> getTodosClientes() {
 		return lista;
 	}
-	
+
 	public void excluir(int indice) {
 		lista.remove(indice);
+	}
+
+	public Cliente buscarPorIndice(int indice) {
+		return lista.get(indice);
+
 	}
 }

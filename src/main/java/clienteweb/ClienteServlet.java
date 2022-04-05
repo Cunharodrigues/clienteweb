@@ -40,12 +40,27 @@ public class ClienteServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		Cliente cli = new Cliente();
+		cli.setEmail("");
+		int indice =-1;
 		String i = req.getParameter("i");
-		if (i!=null && i!="") {
-			clienteService.excluir(Integer.parseInt(i));
+		if(i!=null && i!="") {
+			indice = Integer.parseInt(i);
 		}
+		String acao = req.getParameter("acao");
+		if(i!=null && i!="" && acao!=null && acao!=""){
+			if(acao.equals("exc")) {				
+				clienteService.excluir(indice);
+				
+			}else if(acao.equals("edit")) {				
+				cli = clienteService.buscarPorIndice(indice);
+			}
+		}
+				
 
 		RequestDispatcher dispatcher = req.getRequestDispatcher("cliente.jsp");
+		req.setAttribute("cli", cli);
+		req.setAttribute("iCli", indice);		
 		req.setAttribute("lista", clienteService.getTodosClientes());
 		dispatcher.forward(req, resp);
 	}
@@ -55,6 +70,11 @@ public class ClienteServlet extends HttpServlet {
 
 		// Recebendo o e-mail
 		String email = req.getParameter("email");
+		String i = req.getParameter("i");
+		int indice = -1;
+		if(i!=null && i!="") {
+			indice = Integer.parseInt(i);
+		}
 
 		// Colocando e-mail em um objeto cliente
 		Cliente cli = new Cliente();
@@ -62,10 +82,15 @@ public class ClienteServlet extends HttpServlet {
 
 		// adicionando o objeto cliente na Lista de cliente
 
-		clienteService.cadastrar(cli);
+		clienteService.salvar(indice, cli);
 
+		cli = new Cliente();
+		cli.setEmail("");
+		
 		RequestDispatcher dispatcher = req.getRequestDispatcher("cliente.jsp");
 		req.setAttribute("msg", "Cadastrado com sucesso!");
+		req.setAttribute("cli", cli);
+		req.setAttribute("iCli", -1);
 		req.setAttribute("lista", clienteService.getTodosClientes());
 		dispatcher.forward(req, resp);
 

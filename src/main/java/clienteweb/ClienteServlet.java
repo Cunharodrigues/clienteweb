@@ -12,12 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.tecnosul.model.Cliente;
+import br.com.tecnosul.service.ClienteService;
 
 @WebServlet(urlPatterns = { "/cliente", "/clienteServlet", "/clienteController" })
 public class ClienteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	List<Cliente> lista = new ArrayList<>();
+
+	ClienteService clienteService;
 
 	public ClienteServlet() {
 		System.out.println("Construindo Servlet...");
@@ -25,40 +26,54 @@ public class ClienteServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
+		clienteService = new ClienteService();
 		System.out.println("Inicializando Servlet");
 		super.init();
 	}
-	
+
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("Chamando Service...");
 		super.service(req, resp);
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
+		String i = req.getParameter("i");
+		if (i!=null && i!="") {
+			clienteService.excluir(Integer.parseInt(i));
+		}
+
 		RequestDispatcher dispatcher = req.getRequestDispatcher("cliente.jsp");
-		req.setAttribute("lista", lista);
+		req.setAttribute("lista", clienteService.getTodosClientes());
 		dispatcher.forward(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		//Recebendo o e-mail
+
+		// Recebendo o e-mail
 		String email = req.getParameter("email");
-		
-		//Colocando e-mail em um objeto cliente
+
+		// Colocando e-mail em um objeto cliente
 		Cliente cli = new Cliente();
 		cli.setEmail(email);
-				
-		//adicionando o objeto cliente na Lista de cliente		
-		lista.add(cli);
-		
-		/* System.out.println("Chamou pelo método POST");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().print("Chamou pelo método POST enviando e-mail:" + "!");*/
+
+		// adicionando o objeto cliente na Lista de cliente
+
+		clienteService.cadastrar(cli);
+
+		RequestDispatcher dispatcher = req.getRequestDispatcher("cliente.jsp");
+		req.setAttribute("msg", "Cadastrado com sucesso!");
+		req.setAttribute("lista", clienteService.getTodosClientes());
+		dispatcher.forward(req, resp);
+
+		/*
+		 * resp.sendRedirect("cliente"); System.out.println("Chamou pelo método POST");
+		 * resp.setCharacterEncoding("UTF-8");
+		 * resp.getWriter().print("Chamou pelo método POST enviando e-mail:" + "!");
+		 */
 	}
 
 	@Override
@@ -76,10 +91,10 @@ public class ClienteServlet extends HttpServlet {
 		resp.setCharacterEncoding("UTF-8");
 		resp.getWriter().print("Chamou pelo método PUT");
 	}
-	
+
 	@Override
 	public void destroy() {
-		System.out.println("Servlet será destruido");		
+		System.out.println("Servlet será destruido");
 		super.destroy();
 	}
 }

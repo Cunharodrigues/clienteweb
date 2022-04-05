@@ -7,14 +7,27 @@
 <title>Insert title here</title>
 </head>
 <body>
+
+<div>
+<%
+Object msg = request.getAttribute("msg");
+if (msg!=null){
+	String msgStr = (String)msg;
+	out.print(msg);
+}
+%>
+</div>
+
 	<form method="post" action="cliente">
 		E-mail: <input type="text" value="" name="email" />
 		 <input type="submit" value="Save">
 	</form>
 	<%
 	List<Cliente> lista = (List<Cliente>)request.getAttribute("lista");
+	int i=0;
 	for (Cliente c: lista) {
-		out.print(c.getEmail() + "</br>");
+		out.print(c.getEmail() + "<a href='cliente?i="+ i +"'> 'excluir'</a></br>");
+		i++;
 	}
 	%>
 </body>
